@@ -48,8 +48,8 @@ public class AttachCommand extends Command {
      * an
      * applicant at the specified index on the visible applicant list.
      *
-     * @param index     index of the applicant to attach the file to
-     * @param filePaths the path(s) of the file/files to be attached
+     * @param index index of the applicant to attach the file to
+     * @param attachments the path(s) of the file/files to be attached
      */
     public AttachCommand(Index index, List<Attachment> attachments) {
         this.index = index;
@@ -58,10 +58,6 @@ public class AttachCommand extends Command {
 
     @Override
     public CommandResult execute(Model model) throws CommandException {
-        // 1. Read the contents of the existing directory
-        // 2. Copy in all the new attachments, failing first if one of them fails
-        // 3. Add the attachments to the model
-
         requireNonNull(model);
         List<Person> lastShownList = model.getFilteredPersonList();
 
@@ -84,15 +80,19 @@ public class AttachCommand extends Command {
         }
 
         Person attachedPerson = new Person(
-                personToAttachTo.getStudentNumber(),
-                personToAttachTo.getName(),
-                personToAttachTo.getPhone(),
-                personToAttachTo.getEmail(),
-                personToAttachTo.getGpa(),
-                personToAttachTo.getTags(),
-                personToAttachTo.getIsHidden(),
-                updatedAttachments,
-                personToAttachTo.getBookmark());
+            personToAttachTo.getStudentNumber(),
+            personToAttachTo.getName(),
+            personToAttachTo.getPhone(),
+            personToAttachTo.getEmail(),
+            personToAttachTo.getGpa(),
+            personToAttachTo.getPreviousGrade(),
+            personToAttachTo.getInterviewScore(),
+            personToAttachTo.getComment(),
+            personToAttachTo.getTags(),
+            updatedAttachments,
+            personToAttachTo.getIsHidden(),
+            personToAttachTo.getIsBookmarked()
+        );
         model.setPerson(personToAttachTo, attachedPerson);
 
         return new CommandResult(

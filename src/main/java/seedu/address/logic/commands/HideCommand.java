@@ -27,7 +27,7 @@ public class HideCommand extends Command {
             + "Parameter: INDEX (must be a positive integer) \n"
             + "Example: " + COMMAND_WORD + " 1 ";
 
-    public static final String MESSAGE_HIDE_APPLICANT_SUCCESS = "Applicant %1$s hidden from lists";
+    public static final String MESSAGE_HIDE_APPLICANT_SUCCESS = "Applicant %1$s hidden from lists.";
 
     public final Index targetIndex;
 
@@ -63,10 +63,21 @@ public class HideCommand extends Command {
     private static Person createHiddenPerson(Person personToHide) {
         assert personToHide != null;
 
-        return new Person(personToHide.getStudentNumber(), personToHide.getName(), personToHide.getPhone(),
-                personToHide.getEmail(), personToHide.getGpa(), personToHide.getTags(), new IsHidden(true),
-                personToHide.getAttachments(), personToHide.getBookmark());
+        return new Person(
+                personToHide.getStudentNumber(),
+                personToHide.getName(),
+                personToHide.getPhone(),
+                personToHide.getEmail(),
+                personToHide.getGpa(),
+                personToHide.getPreviousGrade(),
+                personToHide.getInterviewScore(),
+                personToHide.getComment(),
+                personToHide.getTags(),
+                personToHide.getAttachments(),
+                new IsHidden(true),
+                personToHide.getIsBookmarked());
     }
+
     @Override
     public boolean equals(Object other) {
         if (other == this) {

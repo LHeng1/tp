@@ -27,7 +27,7 @@ public class UnhideCommand extends Command {
             + "Parameter: INDEX (must be a positive integer) \n"
             + "Example: " + COMMAND_WORD + " 1 ";
 
-    public static final String MESSAGE_UNHIDE_APPLICANT_SUCCESS = "Applicant %1$s unhidden from lists";
+    public static final String MESSAGE_UNHIDE_APPLICANT_SUCCESS = "Applicant %1$s unhidden from lists.";
 
     public final Index targetIndex;
 
@@ -62,10 +62,22 @@ public class UnhideCommand extends Command {
      */
     private static Person createUnhiddenPerson(Person personToUnhide) {
         assert personToUnhide != null;
-        return new Person(personToUnhide.getStudentNumber(), personToUnhide.getName(), personToUnhide.getPhone(),
-                personToUnhide.getEmail(), personToUnhide.getGpa(), personToUnhide.getTags(), new IsHidden(false),
-                personToUnhide.getAttachments(), personToUnhide.getBookmark());
+
+        return new Person(
+                personToUnhide.getStudentNumber(),
+                personToUnhide.getName(),
+                personToUnhide.getPhone(),
+                personToUnhide.getEmail(),
+                personToUnhide.getGpa(),
+                personToUnhide.getPreviousGrade(),
+                personToUnhide.getInterviewScore(),
+                personToUnhide.getComment(),
+                personToUnhide.getTags(),
+                personToUnhide.getAttachments(),
+                new IsHidden(false),
+                personToUnhide.getIsBookmarked());
     }
+
     @Override
     public boolean equals(Object other) {
         if (other == this) {

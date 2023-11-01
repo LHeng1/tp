@@ -219,25 +219,167 @@ The following activity diagram summarizes what happens when a user executes a ne
 
 <img src="images/CommitActivityDiagram.png" width="250" />
 
-#### Design considerations:
+### \[Proposed\] Hide/unhide feature
 
-**Aspect: How undo & redo executes:**
+#### Proposed Implementation
 
-* **Alternative 1 (current choice):** Saves the entire address book.
-  * Pros: Easy to implement.
-  * Cons: May have performance issues in terms of memory usage.
+The proposed undo/redo mechanism introduces the capability to selectively hide certain applicants from view, improving user experience and providing greater control over the displayed information. This also includes a way to view all hidden applicants in a list. This feature implements the following operations:
+* `HideCommand#execute()` — Hides the specified applicant from the list.
+* `UnhideCommand#execute()` — Unhides the specified applicant from the list.
+* `UnhideAllCommand#execute()` — Unhides all hidden applicants.
+* `ListHiddenCommand#execute()` — Displays a list of all hidden applicants.
 
-* **Alternative 2:** Individual command knows how to undo/redo by
-  itself.
-  * Pros: Will use less memory (e.g. for `delete`, just save the person being deleted).
-  * Cons: We must ensure that the implementation of each individual command are correct.
+Given below is an example usage scenario and how the hide/unhide mechanism behaves at each step.
 
-_{more aspects and alternatives to be added}_
+Step 1. The user launches the application for the first time. The applicant list displays all applicants without any hidden applicants.
 
-### \[Proposed\] Data archiving
+Step 2. The user decides to hide the 3rd applicant in the applicant list by executing hide 3. The `hide` command calls `Model#setPerson()` to replace the applicant with a hidden version.  `Model#updateFilteredPersonList()` to update the list of applicants displayed in the UI to exclude the hidden applicant.
 
-_{Explain here how the data archiving feature will be implemented}_
+Step 3. The user executes `list hidden` to view all hidden applicants. The `list hidden` command calls `Model#updateFilteredPersonList()` to update the list of applicants displayed in the UI to include only hidden applicants.
 
+Step 4. The user decides to unhide the 1st applicant in the hidden applicant list by executing unhide 1. The `hide` command calls `Model#setPerson()` to replace the hidden applicant with a non-hidden version. The `unhide` command calls `Model#updateFilteredPersonList()` to update the list of applicants displayed in the UI to include the unhidden applicant.
+
+Step 5. Alternatively, the user can choose to unhide all hidden applicants by executing unhide all. The `unhide all` command creates a copy of the model and calls `Model#updateFilteredPersonList()` and `Model#getFilteredPersonList()` on that model to receive a list of hidden applicants. It then replaces every hidden person in the original model with a non-hidden version by calling `Model#setPerson()`. The `unhide all` command calls `Model#updateFilteredPersonList()` to update the list of applicants displayed in the UI to include all unhidden applicants.
+
+The following sequence diagram shows how the undo operation works:
+
+![HideSequenceDiagram](images/HideSequenceDiagram.png)
+
+
+The following activity diagram summarizes what happens when a user executes a new command:
+
+<img src="images/HideActivityDiagram.png" width="250" />
+
+### Bookmark/Unbookmark feature
+
+#### Implementation
+
+The bookmark/unbookmark mechanism gives users the ability to bookmark or unbookmark certain applicants they want to take note of, as well as list these bookmarked applicants. This allows users to better differentiate between a long list of applicants, improving the ease of usage of this application and user experience. This feature implements the following operations:
+* `BookmarkCommand#execute()` — Bookmarks a specified applicant.
+* `UnbookmarkCommand#execute()` — Unbookmarks a specified applicant.
+* `ListBookmarkedCommand#execute()` — Displays a list of all bookmarked applicants.
+
+Given below is an example usage scenario and how the bookmark/unbookmark mechanism behaves at each step.
+
+Step 1. The user launches the application for the first time. TAfinder will be initialized with imported data, wherein all applicants will begin as unbookmarked.
+
+Step 2. The user executes `bookmark 5` command to bookmark the 5th applicant in TAfinder. The `bookmark` command calls `Model#setPerson()`, resulting in a copy of the original applicant, now modified to be bookmarked, being stored in the list of applicants after the `bookmark 5` command executes. Additionally, the UI is updated to indicate that the applicant is now bookmarked via the bookmark flag.
+
+Step 3. After bookmarking a number of applicants, the user now decides that bookmarking the 2nd applicant was a mistake, and decides to unbookmark them by executing the `unbookmark 2` command. The unbookmark command will call `Model#setPerson()`, resulting in a copy of the original applicant, now modified to be unbookmarked, being stored in the list of applicants after the `unbookmark 2` command executes. Once again, the UI is updated to indicate that the applicant is now unbookmarked via the bookmark flag.
+
+Step 4. The user then decides to view all bookmarked applicants by executing the `list-bookmarked` command. The `list-bookmarked` command calls `Model#updateFilteredPersonList()`, which updates the list of applicants presented in the UI to only include bookmarked applicants.
+
+
+### Compare feature
+
+#### Implementation
+
+The compare mechanism allows users to compare two distinct TA applicants in the TAfinder app. The compare mechanism is mainly facilitated by the `CompareCommand`, `CompareCommandParser`, and `CompareWindow` classes. It extends the abstract class `Command` with an `execute` functionality, to facilitate the execution of the command. Specifically, the compare feature is implemented through the following components and operations:
+
+- `CompareCommand` — Core component responsible for executing the comparison of two TA applicants in the list.
+- `Person` — Represents the TA applicants with their respective fields, such as `Gpa`, to be used for comparison.
+- `CompareCommandParser` — Contains the functionalities for user input parsing. It ensures that user input is valid as a compare command by meeting specific requirements.
+- `CompareWindow` — Main User Interface (UI) for after a compare command is successfully executed. It will display the content of the two TA applicants side by side.
+
+
+Given below is an example usage scenario and how the compare mechanism behaves at each step.
+
+Step 0. Assume that there is an existing list of applicants in the application after launch.
+
+Step 1. The user enters the compare command `compare 1 2` to compare the first and second applicants in the existing list. The `CompareCommandParser` is invoked to parse the user's input.
+
+Step 2. `CompareCommandParser` will then invoke `ParserUtil` for parsing of the indices and check for index errors. If indices are invalid, the system will generate an error message. The error message will be displayed to the user, providing clear feedback about the issue and the specific constraints that are not met.
+
+Step 3. If indices are valid, `CompareCommand#execute()` fetches the two intended applicants from the currently visible list and ensures that both indexes do not point to the same applicant.
+
+Step 4. Then, `CompareCommand#execute()` creates a new `CompareWindow` instance which is immediately shown, with the two applicants' information passed to `CompareWindow`, in the form of the `Person` model.
+
+The following sequence diagram displays how the compare function works until Step 4:
+
+![CompareSequenceDiagram](images/CompareSequenceDiagram.png)
+
+Step 5. `CompareWindow` handles the GUI presentation aspects, in the form of a pop-up window. It uses the JavaFX `GridPane` layout to display the respective `Person` attributes side-by-side.
+
+Step 6. A success message is displayed to the user to confirm that the comparison of applicants is successful.
+
+The following activity diagram summarizes what happens when a user executes a `compare` command:
+
+![CompareActivityDiagram](images/CompareActivityDiagram.png)
+
+### \[Proposed\] Comment feature
+
+#### Implementation
+The comment command allows users to insert a comment on TA applicants in TAfinder app. 
+The comment mechanism is mainly facilitated by the `CommentCommand` and `CommentCommandParser` classes. It extends the abstract class `Command` with an `execute` functionality, to facilitate the execution of the command. Specifically, the comment feature is implemented through the following components and operations:
+
+- `CommentCommand` — Core component responsible for executing the adding of comments to a TA applicant in the list.
+- `CommentCommand#execute` — Adds the comment to the specific applicant in the list.
+- `CommentCommandParser` — Contains the functionalities for user input parsing. It ensures that user input is valid as a compare command by meeting specific requirements.
+
+Given below is an example usage scenario and how the comment mechanism behaves at each step.
+
+Step 1. The user launches the application for the first time. The applicant list displays all applicants.
+
+Step 2. The user decides to comment on the 3rd applicant in the applicant list with `Hardworking` as the comment by executing `comment 3 Hardworking`. The `CommentCommmandParser` is invoked to parse the user's input.
+
+Step 3. `CommmentCommandParser` will then invoke ParserUtil for parsing of the index and check for index errors. If the index is invalid, the system will generate an error message. The error message will be displayed to the user, providing clear feedback about the issue and the specific constraints that are not met.
+
+Step 4. If the index is valid, `CommentCommand#execute()` fetches the intended applicant from the currently visible list and adds the comment `Hardworking` to the applicant with the corresponding index. The adding of comment is destructive, meaning if the specified applicant has an existing comment, it will be overwritten.
+
+Step 5. Then, `CommentCommand#execute()` updates `Model#setModel` with the updated Person. Displaying the updated applicant list with the comment added.
+
+Step 6. A success message is displayed to the user to confirm that the comment has been added to the applicant successfully.
+
+#### Design considerations
+
+**Aspect: Comparison GUI:**
+
+* **Alternative 1 (current choice):** Compare two applicants in one pop-up window.
+    * Pros: 
+      1. Easier to implement the pop-up window
+      2. Able to avoid over-dependencies within the UI component.
+    * Cons: Design may not be uniform with main window.
+
+* **Alternative 2:** Compare two applicants in the main window.
+    * Pros:
+      1. Easy view of information.
+    * Cons:
+      1. Difficult to implement the UI change when a compare command is inputted, as whole window needs to be modified.
+      2. Inconvenient to refer back to list of applicants if needed.
+
+* **Alternative 3:** Compare multiple (two or more) applicants.
+    * Pros: More convenient to choose between applicants.
+    * Cons: Harder to implement the UI.
+
+
+
+
+### Attach feature
+
+#### Implementation
+
+The attach feature allows users to attach files to TA applicants in the app. Attaching files *copies* these files into the `data` directory and adds a reference to those files to that `Person` model. This means that even if the original files are deleted, TAfinder would still have access to the copies of those files.
+
+The attachment mechanism is mainly facilitated by the `AttachCommand`, `AttachCommandParser`, and `Attachment` classes. It extends the abstract class `Command` with an `execute` functionality, to facilitate the execution of the command. Specifically, the compare feature is implemented through the following components and operations:
+
+- `AttachCommand` — Core component responsible for executing the comparison of two TA applicants in the list.
+- `AttachCommandParser` — Contains the functionalities for user input parsing. It ensures that user input is valid as an attach command by meeting specific requirements.
+- `Person` — Represents the TA applicants with their respective fields, such as `Attachment`, to attach files to.
+- `Attachment` — Represents a reference to a file. This can be a file that has been "attached" to a `Person`, or just a file within the file system of the computer.
+
+Given below is an example usage scenario and how the attach mechanism behaves at each step.
+
+Step 0. Assume that there is an existing list of applicants in the application after launch.
+
+Step 1. The user enters the compare command `attach 1 f/Downloads/resume.pdf f/Downloads/cv.txt` to attach the files `resume.pdf` and `cv.txt` in the `Downloads` directory to the first user in the visible list.
+
+Step 2. `AttachCommandParser` will then invoke `ParserUtil` for parsing of the index and check for index errors, and then parses the file paths to check for any invalid path characters. If index is invalid or the file path contains invalid path characters, the system will generate an error message. The error message will be displayed to the user, providing clear feedback about the issue and the specific constraints that are not met.
+
+Step 3. If indices are valid, `AttachCommand#execute()` fetches the intended applicant from the currently visible list.
+
+Step 4. Then, `AttachCommand#execute()` copies each attachment into the `data` directory, to the path `data/attachments/{student number}/{filename}`.
+
+Step 5. Finally, a success message is displayed to the user indicating the number of attachments that have been copied.
 
 --------------------------------------------------------------------------------------------------------------------
 
@@ -331,7 +473,7 @@ _{Explain here how the data archiving feature will be implemented}_
 
 ### Use cases
 
-(For all use cases below, the **System** is `TAFinder` and the **Actor** is `NUS SOC professor`, unless specified otherwise)
+(For all use cases below, the **System** is `TAfinder` and the **Actor** is `NUS SOC professor`, unless specified otherwise)
 
 **UC01 - Edit an applicant**
 

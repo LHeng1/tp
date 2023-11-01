@@ -9,9 +9,9 @@ import seedu.address.model.Model;
  */
 public class ListBookmarkedCommand extends Command {
 
-    public static final String COMMAND_WORD = "list-bookmark";
+    public static final String COMMAND_WORD = "list-bookmarked";
 
-    public static final String MESSAGE_SUCCESS = "Listed all bookmarked applicants";
+    public static final String MESSAGE_SUCCESS = "Listed all bookmarked applicants.";
 
     @Override
     public CommandResult execute(Model model) {

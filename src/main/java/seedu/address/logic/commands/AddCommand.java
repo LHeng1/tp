@@ -1,10 +1,13 @@
 package seedu.address.logic.commands;
 
 import static java.util.Objects.requireNonNull;
+import static seedu.address.logic.parser.CliSyntax.PREFIX_COMMENT;
 import static seedu.address.logic.parser.CliSyntax.PREFIX_EMAIL;
 import static seedu.address.logic.parser.CliSyntax.PREFIX_GPA;
+import static seedu.address.logic.parser.CliSyntax.PREFIX_INTERVIEW_SCORE;
 import static seedu.address.logic.parser.CliSyntax.PREFIX_NAME;
 import static seedu.address.logic.parser.CliSyntax.PREFIX_PHONE;
+import static seedu.address.logic.parser.CliSyntax.PREFIX_PREVIOUS_GRADE;
 import static seedu.address.logic.parser.CliSyntax.PREFIX_STUDENT_NUMBER;
 import static seedu.address.logic.parser.CliSyntax.PREFIX_TAG;
 
@@ -28,6 +31,8 @@ public class AddCommand extends Command {
             + PREFIX_PHONE + "PHONE "
             + PREFIX_EMAIL + "EMAIL "
             + PREFIX_GPA + "GPA "
+            + PREFIX_PREVIOUS_GRADE + "PREV GRADE "
+            + PREFIX_INTERVIEW_SCORE + "INTERVIEW SCORE "
             + "[" + PREFIX_TAG + "TAG]...\n"
             + "Example: " + COMMAND_WORD + " "
             + PREFIX_STUDENT_NUMBER + "A0343434C "
@@ -35,11 +40,11 @@ public class AddCommand extends Command {
             + PREFIX_PHONE + "98765432 "
             + PREFIX_EMAIL + "johnd@example.com "
             + PREFIX_GPA + "4.9 "
-            + PREFIX_TAG + "past TA "
-            + PREFIX_TAG + "dean's list";
+            + PREFIX_COMMENT + "Hardworking and diligent "
+            + PREFIX_TAG + "pastTA ";
 
-    public static final String MESSAGE_SUCCESS = "New applicant added: %1$s";
-    public static final String MESSAGE_DUPLICATE_PERSON = "This applicant already exists in the applicant list";
+    public static final String MESSAGE_SUCCESS = "New applicant added: %1$s.";
+    public static final String MESSAGE_DUPLICATE_PERSON = "This applicant already exists in the applicant list.";
 
     private final Person toAdd;
 

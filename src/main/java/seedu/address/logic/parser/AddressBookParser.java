@@ -13,6 +13,7 @@ import seedu.address.logic.commands.AttachCommand;
 import seedu.address.logic.commands.BookmarkCommand;
 import seedu.address.logic.commands.ClearCommand;
 import seedu.address.logic.commands.Command;
+import seedu.address.logic.commands.CommentCommand;
 import seedu.address.logic.commands.CompareCommand;
 import seedu.address.logic.commands.DeleteCommand;
 import seedu.address.logic.commands.EditCommand;
@@ -20,16 +21,16 @@ import seedu.address.logic.commands.ExitCommand;
 import seedu.address.logic.commands.FindCommand;
 import seedu.address.logic.commands.HelpCommand;
 import seedu.address.logic.commands.HideCommand;
+import seedu.address.logic.commands.ImportCommand;
 import seedu.address.logic.commands.ListBookmarkedCommand;
 import seedu.address.logic.commands.ListCommand;
 import seedu.address.logic.commands.ListHiddenCommand;
-import seedu.address.logic.commands.SortByGpaCommand;
+import seedu.address.logic.commands.SortCommand;
 import seedu.address.logic.commands.UnbookmarkCommand;
 import seedu.address.logic.commands.UnhideAllCommand;
 import seedu.address.logic.commands.UnhideCommand;
 import seedu.address.logic.commands.ViewCommand;
 import seedu.address.logic.parser.exceptions.ParseException;
-
 
 /**
  * Parses user input.
@@ -58,7 +59,8 @@ public class AddressBookParser {
         final String commandWord = matcher.group("commandWord");
         final String arguments = matcher.group("arguments");
 
-        // Note to developers: Change the log level in config.json to enable lower level (i.e., FINE, FINER and lower)
+        // Note to developers: Change the log level in config.json to enable lower level
+        // (i.e., FINE, FINER and lower)
         // log messages such as the one below.
         // Lower level log messages are used sparingly to minimize noise in the code.
         logger.fine("Command word: " + commandWord + "; Arguments: " + arguments);
@@ -82,6 +84,9 @@ public class AddressBookParser {
 
         case AttachCommand.COMMAND_WORD:
             return new AttachCommandParser().parse(arguments);
+
+        case ImportCommand.COMMAND_WORD:
+            return new ImportCommandParser().parse(arguments);
 
         case ListCommand.COMMAND_WORD:
             return new ListCommand();
@@ -113,8 +118,11 @@ public class AddressBookParser {
         case UnhideAllCommand.COMMAND_WORD:
             return new UnhideAllCommand();
 
-        case SortByGpaCommand.COMMAND_WORD:
-            return new SortByGpaCommand();
+        case SortCommand.COMMAND_WORD:
+            return new SortCommandParser().parse(arguments);
+
+        case CommentCommand.COMMAND_WORD:
+            return new CommentCommandParser().parse(arguments);
 
         case CompareCommand.COMMAND_WORD:
             return new CompareCommandParser().parse(arguments);

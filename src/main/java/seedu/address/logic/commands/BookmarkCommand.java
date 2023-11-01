@@ -10,7 +10,7 @@ import seedu.address.commons.util.ToStringBuilder;
 import seedu.address.logic.Messages;
 import seedu.address.logic.commands.exceptions.CommandException;
 import seedu.address.model.Model;
-import seedu.address.model.person.Bookmark;
+import seedu.address.model.person.IsBookmarked;
 import seedu.address.model.person.Person;
 
 
@@ -27,7 +27,8 @@ public class BookmarkCommand extends Command {
             + "Parameter: INDEX (must be a positive integer) \n"
             + "Example: " + COMMAND_WORD + " 1 ";
 
-    public static final String MESSAGE_BOOKMARK_APPLICANT_SUCCESS = "Applicant %1$s bookmarked";
+    public static final String MESSAGE_BOOKMARK_APPLICANT_SUCCESS = "Applicant at index %1$s has been "
+            + "successfully bookmarked.";
 
     public final Index targetIndex;
 
@@ -50,12 +51,21 @@ public class BookmarkCommand extends Command {
         }
 
         Person personToBookmark = lastShownList.get(targetIndex.getZeroBased());
-        Person bookmarkedPerson = new Person(personToBookmark.getStudentNumber(), personToBookmark.getName(),
-                personToBookmark.getPhone(), personToBookmark.getEmail(), personToBookmark.getGpa(),
-                personToBookmark.getTags(), personToBookmark.getIsHidden(), personToBookmark.getAttachments(),
-                new Bookmark(true));
+        Person bookmarkedPerson = new Person(
+                personToBookmark.getStudentNumber(),
+                personToBookmark.getName(),
+                personToBookmark.getPhone(),
+                personToBookmark.getEmail(),
+                personToBookmark.getGpa(),
+                personToBookmark.getPreviousGrade(),
+                personToBookmark.getInterviewScore(),
+                personToBookmark.getComment(),
+                personToBookmark.getTags(),
+                personToBookmark.getAttachments(),
+                personToBookmark.getIsHidden(),
+                new IsBookmarked(true));
         model.setPerson(personToBookmark, bookmarkedPerson);
-        return new CommandResult(String.format(MESSAGE_BOOKMARK_APPLICANT_SUCCESS, Messages.format(bookmarkedPerson)));
+        return new CommandResult(String.format(MESSAGE_BOOKMARK_APPLICANT_SUCCESS, targetIndex.getOneBased()));
     }
 
     @Override

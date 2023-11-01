@@ -3,6 +3,7 @@ package seedu.address.storage;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Optional;
 import java.util.Set;
 import java.util.stream.Collectors;
 
@@ -11,13 +12,16 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 
 import seedu.address.commons.exceptions.IllegalValueException;
 import seedu.address.model.attachment.Attachment;
-import seedu.address.model.person.Bookmark;
+import seedu.address.model.person.Comment;
 import seedu.address.model.person.Email;
 import seedu.address.model.person.Gpa;
+import seedu.address.model.person.InterviewScore;
+import seedu.address.model.person.IsBookmarked;
 import seedu.address.model.person.IsHidden;
 import seedu.address.model.person.Name;
 import seedu.address.model.person.Person;
 import seedu.address.model.person.Phone;
+import seedu.address.model.person.PreviousGrade;
 import seedu.address.model.person.StudentNumber;
 import seedu.address.model.tag.Tag;
 
@@ -33,10 +37,13 @@ class JsonAdaptedPerson {
     private final String phone;
     private final String email;
     private final Double gpa;
+    private final String previousGrade;
+    private final Double interviewScore; // this is uppercase Double because it can be null
+    private final String comment;
     private final List<JsonAdaptedTag> tags = new ArrayList<>();
-    private final boolean isHidden;
     private final List<JsonAdaptedAttachment> attachments = new ArrayList<>();
-    private final boolean bookmark;
+    private final Boolean isHidden;
+    private final Boolean isBookmarked;
 
     /**
      * Constructs a {@code JsonAdaptedPerson} with the given person details.
@@ -44,21 +51,26 @@ class JsonAdaptedPerson {
     @JsonCreator
 
     public JsonAdaptedPerson(
-        @JsonProperty("studentNo") String studentNo,
-        @JsonProperty("name") String name,
-        @JsonProperty("phone") String phone,
-        @JsonProperty("email") String email,
-        @JsonProperty("gpa") Double gpa,
-        @JsonProperty("tags") List<JsonAdaptedTag> tags,
-        @JsonProperty("isHidden") boolean isHidden,
-        @JsonProperty("attachments") List<JsonAdaptedAttachment> attachments,
-        @JsonProperty("bookmark") boolean bookmark
-    ) {
+            @JsonProperty("studentNo") String studentNo,
+            @JsonProperty("name") String name,
+            @JsonProperty("phone") String phone,
+            @JsonProperty("email") String email,
+            @JsonProperty("gpa") Double gpa,
+            @JsonProperty("previousGrade") String previousGrade,
+            @JsonProperty("interviewScore") Double interviewScore,
+            @JsonProperty("comment") String comment,
+            @JsonProperty("tags") List<JsonAdaptedTag> tags,
+            @JsonProperty("attachments") List<JsonAdaptedAttachment> attachments,
+            @JsonProperty("isHidden") boolean isHidden,
+            @JsonProperty("isBookmarked") boolean isBookmarked) {
         this.studentNo = studentNo;
         this.name = name;
         this.phone = phone;
         this.email = email;
         this.gpa = gpa;
+        this.previousGrade = previousGrade;
+        this.interviewScore = interviewScore;
+        this.comment = comment;
         if (tags != null) {
             this.tags.addAll(tags);
         }
@@ -66,7 +78,7 @@ class JsonAdaptedPerson {
         if (attachments != null) {
             this.attachments.addAll(attachments);
         }
-        this.bookmark = bookmark;
+        this.isBookmarked = isBookmarked;
     }
 
     /**
@@ -78,6 +90,9 @@ class JsonAdaptedPerson {
         phone = source.getPhone().value;
         email = source.getEmail().value;
         gpa = source.getGpa().value;
+        previousGrade = source.getPreviousGrade().toString();
+        interviewScore = source.getInterviewScore().map(score -> score.value).orElse(null);
+        comment = source.getComment().map(comment -> comment.comment).orElse(null);
         tags.addAll(source.getTags().stream()
                 .map(JsonAdaptedTag::new)
                 .collect(Collectors.toList()));
@@ -85,13 +100,15 @@ class JsonAdaptedPerson {
         attachments.addAll(source.getAttachments().stream()
                 .map(JsonAdaptedAttachment::new)
                 .collect(Collectors.toList()));
-        bookmark = source.getBookmark().value;
+        isBookmarked = source.getIsBookmarked().value;
     }
 
     /**
-     * Converts this Jackson-friendly adapted person object into the model's {@code Person} object.
+     * Converts this Jackson-friendly adapted person object into the model's
+     * {@code Person} object.
      *
-     * @throws IllegalValueException if there were any data constraints violated in the adapted person.
+     * @throws IllegalValueException if there were any data constraints violated in
+     *                               the adapted person.
      */
     public Person toModelType() throws IllegalValueException {
         final List<Tag> personTags = new ArrayList<>();
@@ -105,12 +122,9 @@ class JsonAdaptedPerson {
         }
 
         if (studentNo == null) {
-            throw new IllegalValueException(
-                String.format(
-                    MISSING_FIELD_MESSAGE_FORMAT,
-                    StudentNumber.class.getSimpleName()
-                )
-            );
+            throw new IllegalValueException(String.format(
+                            MISSING_FIELD_MESSAGE_FORMAT,
+                            StudentNumber.class.getSimpleName()));
         }
         if (!StudentNumber.isValidStudentNumber(studentNo)) {
             throw new IllegalValueException(StudentNumber.MESSAGE_CONSTRAINTS);
@@ -149,13 +163,56 @@ class JsonAdaptedPerson {
         }
         final Gpa modelGpa = new Gpa(gpa);
 
+        if (previousGrade == null) {
+            throw new IllegalValueException(
+                    String.format(MISSING_FIELD_MESSAGE_FORMAT, PreviousGrade.class.getSimpleName()));
+        }
+        if (!PreviousGrade.isValidGrade(previousGrade)) {
+            throw new IllegalValueException(PreviousGrade.MESSAGE_CONSTRAINTS);
+        }
+        final PreviousGrade modelPreviousGrade = new PreviousGrade(previousGrade);
+
+        if (interviewScore != null && !InterviewScore.isValidInterviewScore(interviewScore)) {
+            throw new IllegalValueException(InterviewScore.MESSAGE_CONSTRAINTS);
+        }
+        final Optional<InterviewScore> modelInterviewScore = interviewScore != null
+                ? Optional.of(new InterviewScore(interviewScore))
+                : Optional.empty();
+
+        if (comment != null && !Comment.isValidComment(comment)) {
+            throw new IllegalValueException(Comment.MESSAGE_CONSTRAINTS);
+        }
+        final Optional<Comment> modelComment = comment != null
+                ? Optional.of(new Comment(comment))
+                : Optional.empty();
+
         final Set<Tag> modelTags = new HashSet<>(personTags);
 
+        if (isHidden == null) {
+            throw new IllegalValueException(
+                    String.format(MISSING_FIELD_MESSAGE_FORMAT, IsHidden.class.getSimpleName()));
+        }
         final IsHidden modelIsHidden = new IsHidden(isHidden);
-        final Bookmark modelBookmark = new Bookmark(bookmark);
 
-        return new Person(modelStudentNo, modelName, modelPhone, modelEmail,
-            modelGpa, modelTags, modelIsHidden, personAttachments, modelBookmark);
+        if (isBookmarked == null) {
+            throw new IllegalValueException(
+                    String.format(MISSING_FIELD_MESSAGE_FORMAT, IsBookmarked.class.getSimpleName()));
+        }
+        final IsBookmarked modelBookmark = new IsBookmarked(isBookmarked);
+
+        return new Person(
+                modelStudentNo,
+                modelName,
+                modelPhone,
+                modelEmail,
+                modelGpa,
+                modelPreviousGrade,
+                modelInterviewScore,
+                modelComment,
+                modelTags,
+                personAttachments,
+                modelIsHidden,
+                modelBookmark);
     }
 
 }

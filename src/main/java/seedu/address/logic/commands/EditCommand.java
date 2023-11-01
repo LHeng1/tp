@@ -1,6 +1,7 @@
 package seedu.address.logic.commands;
 
 import static java.util.Objects.requireNonNull;
+import static seedu.address.logic.parser.CliSyntax.PREFIX_COMMENT;
 import static seedu.address.logic.parser.CliSyntax.PREFIX_EMAIL;
 import static seedu.address.logic.parser.CliSyntax.PREFIX_GPA;
 import static seedu.address.logic.parser.CliSyntax.PREFIX_NAME;
@@ -21,13 +22,14 @@ import seedu.address.logic.Messages;
 import seedu.address.logic.commands.exceptions.CommandException;
 import seedu.address.model.Model;
 import seedu.address.model.attachment.Attachment;
-import seedu.address.model.person.Bookmark;
+import seedu.address.model.person.Comment;
 import seedu.address.model.person.Email;
 import seedu.address.model.person.Gpa;
-import seedu.address.model.person.IsHidden;
+import seedu.address.model.person.InterviewScore;
 import seedu.address.model.person.Name;
 import seedu.address.model.person.Person;
 import seedu.address.model.person.Phone;
+import seedu.address.model.person.PreviousGrade;
 import seedu.address.model.person.StudentNumber;
 import seedu.address.model.tag.Tag;
 
@@ -46,6 +48,7 @@ public class EditCommand extends Command {
             + "[" + PREFIX_PHONE + "PHONE] "
             + "[" + PREFIX_EMAIL + "EMAIL] "
             + "[" + PREFIX_GPA + "GPA] "
+            + "[" + PREFIX_COMMENT + "COMMENT] "
             + "[" + PREFIX_TAG + "TAG]...\n"
             + "Example: " + COMMAND_WORD + " 1 "
             + PREFIX_PHONE + "91234567 "
@@ -59,7 +62,8 @@ public class EditCommand extends Command {
     private final EditPersonDescriptor editPersonDescriptor;
 
     /**
-     * @param index of the applicant in the filtered applicant list to edit
+     * @param index                of the applicant in the filtered applicant list
+     *                             to edit
      * @param editPersonDescriptor details to edit the applicant with
      */
     public EditCommand(Index index, EditPersonDescriptor editPersonDescriptor) {
@@ -88,6 +92,8 @@ public class EditCommand extends Command {
 
         model.setPerson(personToEdit, editedPerson);
         model.updateFilteredPersonList(Model.PREDICATE_SHOW_ALL_UNHIDDEN_PERSONS);
+        model.showPersonAtIndex(index);
+
         return new CommandResult(String.format(MESSAGE_EDIT_PERSON_SUCCESS, Messages.format(editedPerson)));
     }
 
@@ -102,15 +108,19 @@ public class EditCommand extends Command {
         Phone updatedPhone = editPersonDescriptor.getPhone().orElse(personToEdit.getPhone());
         Email updatedEmail = editPersonDescriptor.getEmail().orElse(personToEdit.getEmail());
         Gpa updatedGpa = editPersonDescriptor.getGpa().orElse(personToEdit.getGpa());
+        PreviousGrade updatedPreviousGrade = editPersonDescriptor.getPreviousGrade()
+                .orElse(personToEdit.getPreviousGrade());
+        Optional<InterviewScore> updatedInterviewScore = editPersonDescriptor.getInterviewScore()
+                .or(() -> personToEdit.getInterviewScore());
+        Optional<Comment> updatedComment = editPersonDescriptor.getComment().or(() -> personToEdit.getComment());
         Set<Tag> updatedTags = editPersonDescriptor.getTags().orElse(personToEdit.getTags());
-        IsHidden isHidden = editPersonDescriptor.getIsHidden().orElse(personToEdit.getIsHidden());
-        Bookmark bookmark = editPersonDescriptor.getBookmark().orElse(personToEdit.getBookmark());
 
         StudentNumber studentNo = personToEdit.getStudentNumber();
         List<Attachment> attachments = personToEdit.getAttachments();
 
         return new Person(studentNo, updatedName, updatedPhone, updatedEmail,
-                updatedGpa, updatedTags, isHidden, attachments, bookmark);
+                updatedGpa, updatedPreviousGrade, updatedInterviewScore, updatedComment,
+                updatedTags, attachments, personToEdit.getIsHidden(), personToEdit.getIsBookmarked());
     }
 
     @Override
@@ -138,7 +148,8 @@ public class EditCommand extends Command {
     }
 
     /**
-     * Stores the details to edit the applicant with. Each non-empty field value will replace the
+     * Stores the details to edit the applicant with. Each non-empty field value
+     * will replace the
      * corresponding field value of the applicant.
      */
     public static class EditPersonDescriptor {
@@ -146,10 +157,13 @@ public class EditCommand extends Command {
         private Phone phone;
         private Email email;
         private Gpa gpa;
+        private PreviousGrade previousGrade;
+        private InterviewScore interviewScore;
+        private Comment comment;
         private Set<Tag> tags;
-        private IsHidden isHidden;
-        private Bookmark bookmark;
-        public EditPersonDescriptor() {}
+
+        public EditPersonDescriptor() {
+        }
 
         /**
          * Copy constructor.
@@ -160,17 +174,18 @@ public class EditCommand extends Command {
             setPhone(toCopy.phone);
             setEmail(toCopy.email);
             setGpa(toCopy.gpa);
+            setPreviousGrade(toCopy.previousGrade);
+            setInterviewScore(toCopy.interviewScore);
+            setComment(toCopy.comment);
             setTags(toCopy.tags);
-            setIsHidden(toCopy.isHidden);
-            setBookmark(toCopy.bookmark);
-
         }
 
         /**
          * Returns true if at least one field is edited.
          */
         public boolean isAnyFieldEdited() {
-            return CollectionUtil.isAnyNonNull(name, phone, email, gpa, tags);
+            return CollectionUtil.isAnyNonNull(
+                    name, phone, email, gpa, previousGrade, interviewScore, comment, tags);
         }
 
         public void setName(Name name) {
@@ -205,6 +220,30 @@ public class EditCommand extends Command {
             return Optional.ofNullable(gpa);
         }
 
+        public void setPreviousGrade(PreviousGrade previousGrade) {
+            this.previousGrade = previousGrade;
+        }
+
+        public Optional<PreviousGrade> getPreviousGrade() {
+            return Optional.ofNullable(previousGrade);
+        }
+
+        public void setInterviewScore(InterviewScore interviewScore) {
+            this.interviewScore = interviewScore;
+        }
+
+        public Optional<InterviewScore> getInterviewScore() {
+            return Optional.ofNullable(interviewScore);
+        }
+
+        public void setComment(Comment comment) {
+            this.comment = comment;
+        }
+
+        public Optional<Comment> getComment() {
+            return Optional.ofNullable(comment);
+        }
+
         /**
          * Sets {@code tags} to this object's {@code tags}.
          * A defensive copy of {@code tags} is used internally.
@@ -214,28 +253,13 @@ public class EditCommand extends Command {
         }
 
         /**
-         * Returns an unmodifiable tag set, which throws {@code UnsupportedOperationException}
+         * Returns an unmodifiable tag set, which throws
+         * {@code UnsupportedOperationException}
          * if modification is attempted.
          * Returns {@code Optional#empty()} if {@code tags} is null.
          */
         public Optional<Set<Tag>> getTags() {
             return (tags != null) ? Optional.of(Collections.unmodifiableSet(tags)) : Optional.empty();
-        }
-
-        public void setIsHidden(IsHidden isHidden) {
-            this.isHidden = isHidden;
-        }
-
-        public Optional<IsHidden> getIsHidden() {
-            return Optional.ofNullable(isHidden);
-        }
-
-        public void setBookmark(Bookmark bookmark) {
-            this.bookmark = bookmark;
-        }
-
-        public Optional<Bookmark> getBookmark() {
-            return Optional.ofNullable(bookmark);
         }
 
         @Override
@@ -254,6 +278,9 @@ public class EditCommand extends Command {
                     && Objects.equals(phone, otherEditPersonDescriptor.phone)
                     && Objects.equals(email, otherEditPersonDescriptor.email)
                     && Objects.equals(gpa, otherEditPersonDescriptor.gpa)
+                    && Objects.equals(previousGrade, otherEditPersonDescriptor.previousGrade)
+                    && Objects.equals(interviewScore, otherEditPersonDescriptor.interviewScore)
+                    && Objects.equals(comment, otherEditPersonDescriptor.comment)
                     && Objects.equals(tags, otherEditPersonDescriptor.tags);
         }
 
@@ -263,9 +290,11 @@ public class EditCommand extends Command {
                     .add("name", name)
                     .add("phone", phone)
                     .add("email", email)
-                    .add("address", gpa)
+                    .add("gpa", gpa)
+                    .add("previousGrade", previousGrade)
+                    .add("interviewScore", interviewScore)
                     .add("tags", tags)
-                    .add("bookmark", bookmark)
+                    .add("comment", comment)
                     .toString();
         }
     }

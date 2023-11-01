@@ -10,7 +10,7 @@ import seedu.address.commons.util.ToStringBuilder;
 import seedu.address.logic.Messages;
 import seedu.address.logic.commands.exceptions.CommandException;
 import seedu.address.model.Model;
-import seedu.address.model.person.Bookmark;
+import seedu.address.model.person.IsBookmarked;
 import seedu.address.model.person.Person;
 
 
@@ -27,7 +27,8 @@ public class UnbookmarkCommand extends Command {
             + "Parameter: INDEX (must be a positive integer) \n"
             + "Example: " + COMMAND_WORD + " 1 ";
 
-    public static final String MESSAGE_UNBOOKMARK_APPLICANT_SUCCESS = "Applicant %1$s unbookmarked";
+    public static final String MESSAGE_UNBOOKMARK_APPLICANT_SUCCESS = "Applicant at index %1$s has been "
+            + "successfully unbookmarked.";
 
     public final Index targetIndex;
 
@@ -50,13 +51,21 @@ public class UnbookmarkCommand extends Command {
         }
 
         Person personToUnbookmark = lastShownList.get(targetIndex.getZeroBased());
-        Person unbookmarkedPerson = new Person(personToUnbookmark.getStudentNumber(), personToUnbookmark.getName(),
-                personToUnbookmark.getPhone(), personToUnbookmark.getEmail(), personToUnbookmark.getGpa(),
-                personToUnbookmark.getTags(), personToUnbookmark.getIsHidden(), personToUnbookmark.getAttachments(),
-                new Bookmark(false));
+        Person unbookmarkedPerson = new Person(
+                personToUnbookmark.getStudentNumber(),
+                personToUnbookmark.getName(),
+                personToUnbookmark.getPhone(),
+                personToUnbookmark.getEmail(),
+                personToUnbookmark.getGpa(),
+                personToUnbookmark.getPreviousGrade(),
+                personToUnbookmark.getInterviewScore(),
+                personToUnbookmark.getComment(),
+                personToUnbookmark.getTags(),
+                personToUnbookmark.getAttachments(),
+                personToUnbookmark.getIsHidden(),
+                new IsBookmarked(false));
         model.setPerson(personToUnbookmark, unbookmarkedPerson);
-        return new CommandResult(String.format(MESSAGE_UNBOOKMARK_APPLICANT_SUCCESS,
-                Messages.format(unbookmarkedPerson)));
+        return new CommandResult(String.format(MESSAGE_UNBOOKMARK_APPLICANT_SUCCESS, targetIndex.getOneBased()));
     }
 
     @Override
