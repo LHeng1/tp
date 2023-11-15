@@ -25,9 +25,13 @@ This guide shows you the relevant information for setting up and using TAfinder 
 
 You can click on any of the links below to navigate to the respective sections for more information.
 
+<div style="page-break-after: always;"></div>
+
 {% include toc.md header=true show-in-toc=true ordered=true %}
 
-## Quick start
+<div style="page-break-after: always;"></div>
+
+## Quick Start
 
 ### Prerequisites
 
@@ -67,6 +71,8 @@ An example is shown below:
 | **Toast**           | A popup alert to inform users about certain information.                                                                         |
 | **Tag**             | Tags are associated with applicants, users can tag applicants with any keyword they want, the number of tags are not restricted. |
 
+<div style="page-break-after: always;"></div>
+
 ### Installation
 
 **Step 1.** Download the latest `tafinder.jar` file from [here](https://github.com/AY2324S1-CS2103T-W10-1/tp/releases/latest).
@@ -100,6 +106,8 @@ An example of the final command is displayed below:
 The GUI similar to the below should appear in a few seconds: 
 ![Ui](images/startupUI.png)
 
+<div style="page-break-after: always;"></div>
+
 ### Utilisation
 
 **Step 1:** Type the command in the Command Input Box and press Enter to execute it. e.g. typing **`help`** and
@@ -127,6 +135,8 @@ Some example commands you can try:
 * Return to the [Table of Contents](#toc-heading) to find your desired command.
 
 </div>
+
+<div style="page-break-after: always;"></div>
 
 ### Navigating the User Interface
 
