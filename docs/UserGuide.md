@@ -25,8 +25,6 @@ This guide shows you the relevant information for setting up and using TAfinder 
 
 You can click on any of the links below to navigate to the respective sections for more information.
 
-<div style="page-break-after: always;"></div>
-
 {% include toc.md header=true show-in-toc=true ordered=true %}
 
 ## Quick Start
@@ -54,6 +52,8 @@ An example is shown below:
   ```
 
 </div>
+
+<div style="page-break-after: always;"></div>
 
 #### Glossary
 
@@ -97,7 +97,7 @@ An example of the final command is displayed below:
 
 </div>
 
-The GUI similar to the below should appear in a few seconds: 
+The GUI similar to the below should appear in a few seconds:
 ![Ui](images/startupUI.png)
 
 ### Utilisation
@@ -127,8 +127,6 @@ Some example commands you can try:
 * Return to the [Table of Contents](#toc-heading) to find your desired command.
 
 </div>
-
-<div style="page-break-after: always;"></div>
 
 ### Navigating the User Interface
 
@@ -265,9 +263,9 @@ Following the example above, if you entered everything correctly, you should see
 
 - Successfully added an applicant.
 - Confirmation message:<br>
-**`New applicant added: Student number: <student number>; Name: <name>; Phone: <phone>;
-Email: <email>; GPA: <gpa>; Previous grade: <previous grade>; [Interview score: <interview score>];
-[Comment: <comment>]; [Tags: <tags>].`**
+  **`New applicant added: Student number: <student number>; Name: <name>; Phone: <phone>;
+  Email: <email>; GPA: <gpa>; Previous grade: <previous grade>; [Interview score: <interview score>];
+  [Comment: <comment>]; [Tags: <tags>].`**
 
 </div>
 
@@ -346,7 +344,7 @@ Following the example above, if you entered everything correctly, you should see
 
 - Successfully edited an applicant.
 - Confirmation message:<br>
-**`Edited applicant: Student number: <student number>; Name: <name>; Phone: <phone>; Email: <email>; GPA: <gpa>; Comment: <comment>; Tags: <tags>`**
+  **`Edited applicant: Student number: <student number>; Name: <name>; Phone: <phone>; Email: <email>; GPA: <gpa>; Comment: <comment>; Tags: <tags>`**
 
 </div>
 
@@ -401,7 +399,7 @@ Index out of range:<br>
 
 - Successfully deleted an applicant.
 - Confirmation message:<br>
-**`Deleted applicant: Student number: <student number>; Name: <name>; Phone: <phone>; Email: <email>; GPA: <gpa>; Comment: <comment> ; Tags: <tags>.`**
+  **`Deleted applicant: Student number: <student number>; Name: <name>; Phone: <phone>; Email: <email>; GPA: <gpa>; Comment: <comment> ; Tags: <tags>.`**
 
 </div>
 
@@ -612,7 +610,7 @@ Hides/unhides an applicant from the list of applicants.
 
 - Successfully hidden an applicant.
 - Confirmation message:<br>
-**`Applicant <name>; Phone: <phone>; Email: <email>; GPA: <gpa>; Comment: <comment>; Tags: <tags> hidden from lists.`**
+  **`Applicant <name>; Phone: <phone>; Email: <email>; GPA: <gpa>; Comment: <comment>; Tags: <tags> hidden from lists.`**
 
 </div>
 
@@ -662,7 +660,7 @@ Following the example above, if you entered everything correctly, you should see
 
 - Successfully cleared all applicants.
 - Confirmation message:<br>
-**`Applicant list has been cleared!`**
+  **`Applicant list has been cleared!`**
 
 </div>
 
@@ -925,7 +923,7 @@ watch out for the expected and erroneous messages below that could be displayed 
 
 - Successfully commented on the applicant at the given index.
 - Confirmation message:<br>
-**`Applicant has been successfully commented on.`**
+  **`Applicant has been successfully commented on.`**
 
 </div>
 
@@ -1002,7 +1000,7 @@ A0483910A,Mohammed Taufiq bin Rozaini,85535252,taufiq@u.nus.edu,4.2,A+,
 
 - Successfully attached a file to the applicant at the corresponding index.
 - Confirmation message:<br>
-  **`Imported `i` applicants successfully!`**
+  **`Imported [number] applicants successfully!`**
 
 </div>
 
@@ -1057,7 +1055,7 @@ Attaches local files to the profiles of applicants to provide even more richness
 
 - Successfully attached a file to the applicant at the corresponding index.
 - Confirmation message:<br>
-  **`Attached `i` attachments to `name`!`**
+  **`Attached [number] attachments to [name]!`**
 
 </div>
 
@@ -1153,3 +1151,15 @@ If your changes to the data file makes its format invalid, TAfinder will discard
 |-------------------------|-----------------------------------------------------------------|
 | **Import**              | - `import FILENAME`<br/> - e.g., `import ta-applicants.csv`     |
 | **Attach**              | - `attach INDEX FILEPATH`<br> - e.g.,`attach 2 john-resume.pdf` |
+
+<div style="page-break-after: always;"></div>
+
+## UG Workload Distribution (Table 1.)
+
+| Full Name of Team Member | Agreed allocated sections, duties, roles, ETC                                                                                                                                                                                                                                   | Changes if any, record date and reasons for changes | Actual Contribution to the UG                                                          |
+|--------------------------|---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|-----------------------------------------------------|----------------------------------------------------------------------------------------|
+| Amy Ling                 | Allocated Section(s):<ul><li>Overview</li><li>Quick Start</li><li>Features:</li><ul><li>Hide/Unhide</li><li>Sort</li><li>List</li></ul></ul>Duties:<ul><li>Document own developed features</li><li>Add screenshots for the features</li></ul>                                   | N/A                                                 | Completed the initially assigned sections and duties as per the agreed-upon allocation |
+| Lim Heng Yi              | Allocated Section(s):<ul><li>Features:<ul><li>Edit</li><li>Compare</li></li></ul><li>Prefix Summary</li></ul>Duties:<ul><li>Document own developed features</li><li>Check for spelling, grammar, formatting mistakes</li></ul>                                                  | N/A                                                 | Completed the initially assigned sections and duties as per the agreed-upon allocation |
+| Amos Ting                | Allocated Section(s):<ul><li>Features:<ul><li>Add</li><li>Comment</li></li></ul><li>Command Summary</li></ul>Duties:<ul><li>Document own developed features</li><li>Ensure guide is user-centric</li></ul>                                                                      | N/A                                                 | Completed the initially assigned sections and duties as per the agreed-upon allocation |
+| Nabonita Sen             | Allocated Section(s):<ul><li>Features:<ul><li>Bookmark/Unbookmark</li><li>View</li><li>Delete</li><li>Clear</li><li>Exit</li></li></ul><li>About This Guide</li></ul>Duties:<ul><li>Document own developed features</li></ul>                                                   | N/A                                                 | Completed the initially assigned sections and duties as per the agreed-upon allocation |
+| Kok Chan Hong            | Allocated Section(s):<ul><li>Features:<ul><li>Import</li><li>Attach</li></li></ul><li>Data Management</li><li>Table Of Contents</li></ul>Duties:<ul><li>Document own developed features</li><li>Ensure the PDF formatting is correct after exporting from the website</li></ul> | N/A                                                 | Completed the initially assigned sections and duties as per the agreed-upon allocation |
