@@ -29,8 +29,6 @@ You can click on any of the links below to navigate to the respective sections f
 
 {% include toc.md header=true show-in-toc=true ordered=true %}
 
-<div style="page-break-after: always;"></div>
-
 ## Quick Start
 
 ### Prerequisites
@@ -70,8 +68,6 @@ An example is shown below:
 | **GUI**             | Graphical User Interface.                                                                                                        |
 | **Toast**           | A popup alert to inform users about certain information.                                                                         |
 | **Tag**             | Tags are associated with applicants, users can tag applicants with any keyword they want, the number of tags are not restricted. |
-
-<div style="page-break-after: always;"></div>
 
 ### Installation
 
