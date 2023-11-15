@@ -55,8 +55,6 @@ An example is shown below:
 
 </div>
 
-<div style="page-break-after: always;"></div>
-
 #### Glossary
 
 | Words/Abbreviations | Explanation                                                                                                                      |
@@ -101,8 +99,6 @@ An example of the final command is displayed below:
 
 The GUI similar to the below should appear in a few seconds: 
 ![Ui](images/startupUI.png)
-
-<div style="page-break-after: always;"></div>
 
 ### Utilisation
 
